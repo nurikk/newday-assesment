@@ -28,7 +28,8 @@ https://github.com/rodalbuyeh/pyspark-k8s-boilerplate
     - GCP only example, but can be refactored for AWS EKS, Azure AKS
     - a bit overkill for a interview assessment
 
-It's made decision to use example from @shangmin.j.jiang with 
-some changes like using pipenv instead of vanilla requirements.txt (pip) due to security concerns (pipenv validates all package hashes, pip doesn't)
-
+It's made decision to use example from @shangmin.j.jiang with some changes:
+ - using jupyter/pyspark-notebook base dev docker image, it supports arm64 as well amd64
+ - like using pipenv instead of pip, pipenv verifies dependency package hashes, this leads to slightly more security
+ - refactor out of Makefile scripts like spark-submit and build-reqs.sh
 

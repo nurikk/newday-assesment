@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pydantic-settings = "2.1.0"
+
+[dev-packages]
+pytest = "7.4.3"
+pex = "2.1.154"
+findspark = "2.0.1"
+
+[requires]
+python_version = "3.11"

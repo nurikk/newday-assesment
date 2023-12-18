@@ -19,14 +19,12 @@ bash:
 	@docker exec -it $(CONTAINER_NAME) /bin/bash
 
 build:
-	@rm -rf ./dist; 
-	@docker exec $(CONTAINER_NAME) /bin/bash -c 'pex --python=python3 --inherit-path=prefer -r requirements/prod.txt -o ./dist/jobs.pex -D .'
+	@rm -rf ./dist;
+
+	@docker exec $(CONTAINER_NAME) ./build-reqs.sh
 
 test-submit:
-	@docker exec $(CONTAINER_NAME) /bin/bash -c \
-		'/spark/bin/spark-submit --conf spark.pyspark.python=./dist/jobs.pex \
-								 entrypoint.py --job pi --job-arg date=2021-12-12 \
-								 --env-var partitions=4 --env-var sample_size=20000000'
+	@docker exec $(CONTAINER_NAME) ./submit.sh
 
 unittest:
 	@docker exec -it $(CONTAINER_NAME) /bin/bash -c "python3 -m pytest -s --disable-warnings tests/"

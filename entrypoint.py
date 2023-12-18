@@ -5,24 +5,25 @@ import os
 import sys
 import traceback
 
-try:
-    import pyspark
-except:
-    import findspark
-    findspark.init()
-    import pyspark
+import findspark
+
+findspark.init()
+
+import pyspark
+
 
 def create_spark_session(job_name, env_vars):
     temp_spark = pyspark.sql.SparkSession \
         .builder \
         .appName(job_name)
-        
+
     for k, v in env_vars.items():
         os.environ[k] = v
         temp_spark = temp_spark.config(f"spark.appMasterEnv.{k}", v) \
-                               .config(f"spark.executorEnv.{k}", v) \
-        
+            .config(f"spark.executorEnv.{k}", v)
+
     return temp_spark.getOrCreate()
+
 
 def collect_args(args):
     dict_args = dict()
@@ -31,6 +32,7 @@ def collect_args(args):
             k, v = arg_str.split('=', 1)
             dict_args[k] = v
     return dict_args
+
 
 def main():
     parser = argparse.ArgumentParser(description='Run a PySpark job')
@@ -43,7 +45,7 @@ def main():
     job_args = collect_args(args.job_arg)
     env_vars = collect_args(args.env_var)
     print('\nRunning job %s...\njob-args is %s\nenv-vars is %s\n' % (args.job_name, job_args, env_vars))
-    
+
     spark = create_spark_session(args.job_name, env_vars)
     job_module = importlib.import_module('jobs.%s' % args.job_name)
     start = time.time()
@@ -54,7 +56,8 @@ def main():
         sys.exit(1)
 
     end = time.time()
-    print("\nExecution of job %s took %s seconds" % (args.job_name, end-start))
+    print("\nExecution of job %s took %s seconds" % (args.job_name, end - start))
+
 
 if __name__ == '__main__':
     main()

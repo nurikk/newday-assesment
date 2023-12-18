@@ -1,9 +1,10 @@
-FROM bde2020/spark-base:3.2.0-hadoop3.2
+FROM jupyter/pyspark-notebook:python-3.11
 
-ENV SPARK_HOME /spark
-      
 WORKDIR /opt/application
 
-COPY ./requirements /opt/requirements
+RUN pip install --no-cache-dir --trusted-host pypi.python.org pipenv
 
-RUN pip3 install -r /opt/requirements/dev.txt
+COPY Pipfile .
+COPY Pipfile.lock .
+
+RUN pipenv install --system --deploy --dev
