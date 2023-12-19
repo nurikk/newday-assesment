@@ -28,7 +28,7 @@ def save_df(df: pyspark.sql.DataFrame, output_format: str, destination: str, nam
 def perform(spark: pyspark.SparkContext, args):
     dataset_url = args.get('dataset-url', 'http://files.grouplens.org/datasets/movielens/ml-1m.zip')
     destination = args.get('destination', '/tmp/')
-    output_format = args.get('output_format', 'parquet')
+    output_format = args.get('output-format', 'parquet')
 
     print(f'Staring {dataset_url}')
     assert dataset_url in datasets, "Unknown dataset url"
