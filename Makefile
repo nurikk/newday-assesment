@@ -20,11 +20,10 @@ bash:
 
 build:
 	@rm -rf ./dist;
-
 	@docker exec $(CONTAINER_NAME) ./build-reqs.sh
 
-test-submit:
+test-submit: build
 	@docker exec $(CONTAINER_NAME) ./submit.sh
 
-unittest:
-	@docker exec -it $(CONTAINER_NAME) /bin/bash -c "python3 -m pytest -s --disable-warnings tests/"
+unittest: build
+	@docker exec -it $(CONTAINER_NAME) /bin/bash -c "python3 -m pytest -s --disable-warnings test/"
