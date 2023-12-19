@@ -17,8 +17,8 @@ Complete list of commands can be found using `make help` command
 
 spark-submit command can be found in [submit.sh](./submit.sh)
 to pass arguments to job use `--job-arg` parameter:
-`--job-arg output_format=csv` - use csv as output format
-`--job-arg destination=s3://my-bucket/here/` - store output datasets in s3
+- `--job-arg output_format=csv` - use csv as output format
+- `--job-arg destination=s3://my-bucket/here/` - store output datasets in s3
 Job default parameters can be found in [main.py#L29](https://github.com/nurikk/newday-assesment/blob/854889087087b29c4f5904d6171b86c729760195/jobs/newday/main.py#L29)
 
 # Meta
