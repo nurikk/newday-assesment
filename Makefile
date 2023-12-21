@@ -26,4 +26,4 @@ test-submit: build
 	@docker exec $(CONTAINER_NAME) ./submit.sh
 
 unittest: build
-	@docker exec -it $(CONTAINER_NAME) /bin/bash -c "python3 -m pytest -s --disable-warnings test/"
+	@docker exec -it $(CONTAINER_NAME) ./tests.sh
