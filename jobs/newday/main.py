@@ -5,6 +5,7 @@ from operator import itemgetter
 
 import pyspark.sql
 import wget
+from pyspark.sql import DataFrame
 
 from jobs.newday.schema import datasets
 from jobs.newday.transformations import compute_movie_ratings, compute_top_user_movies
@@ -17,15 +18,13 @@ DEFAULT_DESTINATION = '/tmp/'
 DEFAULT_OUTPUT_FORMAT = 'parquet'
 
 
-
-def download_dataset(sc: pyspark.SparkContext, url: str, schemas: dict[str, StructType]):
-    dataframes = {}
-    with tempfile.TemporaryDirectory() as tempdir:
-        filename = wget.download(url=url, out=tempdir)
-        with zipfile.ZipFile(filename, 'r') as zip_ref:
-            for name, schema in schemas.items():
-                extracted_file_name = zip_ref.extract(member=name, path=tempdir)
-                dataframes[name] = sc.read.csv(extracted_file_name, sep='::', header=False, schema=schema)
+def download_dataset(spark: pyspark.sql.session.SparkSession, url: str, schemas: dict[str, StructType], tempdir: tempfile.TemporaryDirectory) -> dict[str, DataFrame]:
+    dataframes: dict[str, DataFrame] = {}
+    filename = wget.download(url=url, out=tempdir)
+    with zipfile.ZipFile(filename, 'r') as zip_ref:
+        for name, schema in schemas.items():
+            extracted_file_name = zip_ref.extract(member=name, path=tempdir)
+            dataframes[name] = spark.read.csv(extracted_file_name, sep='::', header=False, schema=schema)
 
     return dataframes
 
@@ -44,11 +43,12 @@ def perform(spark: pyspark.SparkContext, args):
     logger.info(f'Staring {dataset_url}')
     assert dataset_url in datasets, "Unknown dataset url"
     schemas = datasets[dataset_url]
-    loaded_datasets = download_dataset(sc=spark, url=dataset_url, schemas=schemas)
-    movies, ratings = itemgetter(*schemas.keys())(loaded_datasets)
+    with tempfile.TemporaryDirectory() as tempdir:
+        loaded_datasets = download_dataset(spark=spark, url=dataset_url, schemas=schemas, tempdir=tempdir)
+        movies, ratings = itemgetter(*schemas.keys())(loaded_datasets)
 
-    movie_ratings = compute_movie_ratings(movies, ratings)
-    save_df(df=movie_ratings, destination=destination, output_format=output_format, name="movie_ratings")
+        movie_ratings = compute_movie_ratings(movies, ratings)
+        save_df(df=movie_ratings, destination=destination, output_format=output_format, name="movie_ratings")
 
-    top_user_movies = compute_top_user_movies(ratings)
-    save_df(df=top_user_movies, destination=destination, output_format=output_format, name="top_user_movies")
+        top_user_movies = compute_top_user_movies(ratings)
+        save_df(df=top_user_movies, destination=destination, output_format=output_format, name="top_user_movies")

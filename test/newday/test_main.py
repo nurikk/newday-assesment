@@ -1,3 +1,4 @@
+import tempfile
 from unittest.mock import MagicMock, patch, call, ANY
 
 import pytest
@@ -6,6 +7,7 @@ from pyspark.testing import assertDataFrameEqual
 
 from jobs.newday.main import save_df, perform, download_dataset
 from jobs.newday.schema import datasets
+
 
 @pytest.mark.parametrize("destination, output_format, name", [
     ("", "csv", "fpp"),
@@ -52,7 +54,15 @@ def test_perform(mock_download_dataset: MagicMock, mock_save_df: MagicMock,
 def test_download_dataset(spark_fixture):
     url = 'http://files.grouplens.org/datasets/movielens/ml-1m.zip'
     schemas = datasets[url]
-    result = download_dataset(url=url, sc=spark_fixture, schemas=schemas)
-    assert isinstance(result, dict)
-    assert 'ml-1m/movies.dat' in result
-    assert 'ml-1m/ratings.dat' in result
+    with tempfile.TemporaryDirectory() as tempdir:
+        result = download_dataset(url=url, spark=spark_fixture, schemas=schemas, tempdir=tempdir)
+        assert isinstance(result, dict)
+        assert 'ml-1m/movies.dat' in result
+        assert 'ml-1m/ratings.dat' in result
+        assert isinstance(result['ml-1m/movies.dat'], DataFrame)
+        assert isinstance(result['ml-1m/ratings.dat'], DataFrame)
+        movies = result['ml-1m/movies.dat'].collect()
+        assert len(movies) > 0
+
+        ratings = result['ml-1m/ratings.dat'].collect()
+        assert len(ratings) > 0
