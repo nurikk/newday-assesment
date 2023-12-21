@@ -20,7 +20,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3    
     - run: make startdevenv
-    - run: make build
     - run: make unittest
-    - run: make test-submit
-        

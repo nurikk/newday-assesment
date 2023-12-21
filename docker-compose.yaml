@@ -13,3 +13,4 @@ services:
     tty: true
     volumes:
       - .:/opt/application
+      - /opt/application/dist
