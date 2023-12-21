@@ -4,8 +4,8 @@ import pytest
 from pyspark.sql import DataFrame
 from pyspark.testing import assertDataFrameEqual
 
-from jobs.newday.main import save_df, perform
-
+from jobs.newday.main import save_df, perform, download_dataset
+from jobs.newday.schema import datasets
 
 @pytest.mark.parametrize("destination, output_format, name", [
     ("", "csv", "fpp"),
@@ -47,3 +47,12 @@ def test_perform(mock_download_dataset: MagicMock, mock_save_df: MagicMock,
 
     assertDataFrameEqual(mock_save_df.mock_calls[0].kwargs['df'], expected_ratings_fixture)
     assertDataFrameEqual(mock_save_df.mock_calls[1].kwargs['df'], expected_top_user_movies)
+
+
+def test_download_dataset(spark_fixture):
+    url = 'http://files.grouplens.org/datasets/movielens/ml-1m.zip'
+    schemas = datasets[url]
+    result = download_dataset(url=url, sc=spark_fixture, schemas=schemas)
+    assert isinstance(result, dict)
+    assert 'ml-1m/movies.dat' in result
+    assert 'ml-1m/ratings.dat' in result

@@ -8,6 +8,7 @@ import wget
 
 from jobs.newday.schema import datasets
 from jobs.newday.transformations import compute_movie_ratings, compute_top_user_movies
+from pyspark.sql.types import StructType
 
 logger = logging.getLogger(__name__)
 
@@ -16,13 +17,14 @@ DEFAULT_DESTINATION = '/tmp/'
 DEFAULT_OUTPUT_FORMAT = 'parquet'
 
 
-def download_dataset(sc: pyspark.SparkContext, url: str, names: dict[str]):
+
+def download_dataset(sc: pyspark.SparkContext, url: str, schemas: dict[str, StructType]):
     dataframes = {}
     with tempfile.TemporaryDirectory() as tempdir:
         filename = wget.download(url=url, out=tempdir)
         with zipfile.ZipFile(filename, 'r') as zip_ref:
-            for name, schema in names.items():
-                extracted_file_name = zip_ref.extract(member=name, pwd=tempdir)
+            for name, schema in schemas.items():
+                extracted_file_name = zip_ref.extract(member=name, path=tempdir)
                 dataframes[name] = sc.read.csv(extracted_file_name, sep='::', header=False, schema=schema)
 
     return dataframes
@@ -39,9 +41,9 @@ def perform(spark: pyspark.SparkContext, args):
 
     logger.info(f'Staring {dataset_url}')
     assert dataset_url in datasets, "Unknown dataset url"
-    schema = datasets[dataset_url]
-    loaded_datasets = download_dataset(sc=spark, url=dataset_url, names=schema)
-    movies, ratings = itemgetter(*schema.keys())(loaded_datasets)
+    schemas = datasets[dataset_url]
+    loaded_datasets = download_dataset(sc=spark, url=dataset_url, schemas=schemas)
+    movies, ratings = itemgetter(*schemas.keys())(loaded_datasets)
 
     movie_ratings = compute_movie_ratings(movies, ratings)
     movie_ratings.show()
