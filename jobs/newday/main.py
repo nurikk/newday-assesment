@@ -3,13 +3,10 @@ import tempfile
 import zipfile
 from operator import itemgetter
 
-import pyspark.sql
+import pyspark
 import wget
-from pyspark.sql import DataFrame
-
 from jobs.newday.schema import datasets
 from jobs.newday.transformations import compute_movie_ratings, compute_top_user_movies
-from pyspark.sql.types import StructType
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +15,11 @@ DEFAULT_DESTINATION = '/tmp/'
 DEFAULT_OUTPUT_FORMAT = 'parquet'
 
 
-def download_dataset(spark: pyspark.sql.session.SparkSession, url: str, schemas: dict[str, StructType], tempdir: tempfile.TemporaryDirectory) -> dict[str, DataFrame]:
-    dataframes: dict[str, DataFrame] = {}
+def download_dataset(spark: pyspark.sql.session.SparkSession,
+                     url: str,
+                     schemas: dict[str, pyspark.sql.types.StructType],
+                     tempdir: tempfile.TemporaryDirectory) -> dict[str, pyspark.sql.DataFrame]:
+    dataframes: dict[str, pyspark.sql.DataFrame] = {}
     filename = wget.download(url=url, out=tempdir)
     with zipfile.ZipFile(filename, 'r') as zip_ref:
         for name, schema in schemas.items():
