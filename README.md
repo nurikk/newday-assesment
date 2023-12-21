@@ -67,8 +67,6 @@ Note: Using PEX and common [entrypoint.py](entrypoint.py) to run jobs is quite b
 jobs can be packed/modularised and easily shipped to production with minimum dependencies.
 
 Things to improve:
- - Add unittest for entrypoint.py
- - Using standard python logging module to print logs
  - Better test code coverage for newday job
  - Move test into separate folder within job, so all jobs will be isolated and easily removed in future with simple folder removal
  - Add auto liter/style guide validation/test coverage report
