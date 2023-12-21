@@ -23,6 +23,11 @@ Job default parameters can be found in [main.py#L14](https://github.com/nurikk/n
 - `dataset-url=http://files.grouplens.org/datasets/movielens/ml-1m.zip`
 - `destination=/tmp/`
 - `output-format=parquet`
+
+## CI
+Repositoery contains github action to run unit tests and test-sumbit jobs on every push to main branch. Resulting artifcats (in csv and parquet formats) are persisted using githiub action and can be downloaded/inspected after every build
+example run: https://github.com/nurikk/newday-assesment/actions/runs/7283349722
+
 ## Meta
 I'm not a spark developer and don't write spark jobs on a daily basis,
 to get most production ready solution it's better to rely on exising boilerplates. 
