@@ -1,16 +1,16 @@
-# Newday spark assessment.
+# Newday Spark Job Assessment Project
 
 # Prerequisites
  - docker
  - make
 
 
-# Run
+## Run
 
 ```shell
-make startdevenv
-make unittest
-make test-submit
+make startdevenv # start test docker container
+make unittest # run unittests in test container
+make test-submit # run spark-submit with job in test container
 ```
 
 Complete list of commands can be found using `make help` command
@@ -19,11 +19,11 @@ spark-submit command can be found in [submit.sh](./submit.sh)
 to pass arguments to job use `--job-arg` parameter:
 - `--job-arg output-format=csv` - use csv as output format
 - `--job-arg destination=s3://my-bucket/here/` - store output datasets in s3
-Job default parameters can be found in [main.py#L29](https://github.com/nurikk/newday-assesment/blob/854889087087b29c4f5904d6171b86c729760195/jobs/newday/main.py#L29)
+Job default parameters can be found in [main.py#L14](https://github.com/nurikk/newday-assesment/blob/d8a56aaa012e88b3ac8ccd2dec0f0fcf07a33522/jobs/newday/main.py#L14)
 - `dataset-url=http://files.grouplens.org/datasets/movielens/ml-1m.zip`
 - `destination=/tmp/`
 - `output-format=parquet`
-# Meta
+## Meta
 I'm not a spark developer and don't write spark jobs on a daily basis,
 to get most production ready solution it's better to rely on exising boilerplates. 
 The main criteria to choose:
