@@ -24,3 +24,9 @@ jobs:
     - run: make startdevenv
     - run: make unittest
     - run: make test-submit
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: results
+        path: |
+          results
