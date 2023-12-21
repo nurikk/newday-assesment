@@ -19,7 +19,6 @@ bash:
 	docker exec -it $(CONTAINER_NAME) /bin/bash
 
 build:
-	rm -rf ./dist;
 	docker exec $(CONTAINER_NAME) ./build-reqs.sh
 
 test-submit: build
