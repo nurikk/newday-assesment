@@ -31,6 +31,8 @@ def download_dataset(sc: pyspark.SparkContext, url: str, schemas: dict[str, Stru
 
 
 def save_df(df: pyspark.sql.DataFrame, output_format: str, destination: str, name: str):
+    logger.info(f'Saving {name} to {destination} in {output_format} format')
+    df.show()
     df.write.format(output_format).mode("overwrite").save(path=f"{destination}{name}.{output_format}")
 
 
@@ -46,9 +48,7 @@ def perform(spark: pyspark.SparkContext, args):
     movies, ratings = itemgetter(*schemas.keys())(loaded_datasets)
 
     movie_ratings = compute_movie_ratings(movies, ratings)
-    movie_ratings.show()
     save_df(df=movie_ratings, destination=destination, output_format=output_format, name="movie_ratings")
 
     top_user_movies = compute_top_user_movies(ratings)
-    top_user_movies.show()
     save_df(df=top_user_movies, destination=destination, output_format=output_format, name="top_user_movies")
