@@ -3,7 +3,6 @@ from pyspark.testing.utils import assertDataFrameEqual
 
 
 def test_compute_top_user_movies(spark_fixture, ratings_fixture, expected_top_user_movies):
-
     actual = compute_top_user_movies(ratings=ratings_fixture, number_of_movies=3)
     assertDataFrameEqual(actual, expected_top_user_movies)
 

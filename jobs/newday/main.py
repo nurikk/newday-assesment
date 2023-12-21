@@ -15,6 +15,7 @@ DEFAULT_DATASET_URL = 'http://files.grouplens.org/datasets/movielens/ml-1m.zip'
 DEFAULT_DESTINATION = '/tmp/'
 DEFAULT_OUTPUT_FORMAT = 'parquet'
 
+
 def download_dataset(sc: pyspark.SparkContext, url: str, names: dict[str]):
     dataframes = {}
     with tempfile.TemporaryDirectory() as tempdir:
