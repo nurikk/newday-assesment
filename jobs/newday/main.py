@@ -8,6 +8,9 @@ import wget
 from jobs.newday.schema import datasets
 from jobs.newday.transformations import compute_movie_ratings, compute_top_user_movies
 
+DEFAULT_DATASET_URL = 'http://files.grouplens.org/datasets/movielens/ml-1m.zip'
+DEFAULT_DESTINATION = '/tmp/'
+DEFAULT_OUTPUT_FORMAT = 'parquet'
 
 def download_dataset(sc: pyspark.SparkContext, url: str, names: dict[str]):
     dataframes = {}
@@ -26,9 +29,9 @@ def save_df(df: pyspark.sql.DataFrame, output_format: str, destination: str, nam
 
 
 def perform(spark: pyspark.SparkContext, args):
-    dataset_url = args.get('dataset-url', 'http://files.grouplens.org/datasets/movielens/ml-1m.zip')
-    destination = args.get('destination', '/tmp/')
-    output_format = args.get('output-format', 'parquet')
+    dataset_url = args.get('dataset-url', DEFAULT_DATASET_URL)
+    destination = args.get('destination', DEFAULT_DESTINATION)
+    output_format = args.get('output-format', DEFAULT_OUTPUT_FORMAT)
 
     print(f'Staring {dataset_url}')
     assert dataset_url in datasets, "Unknown dataset url"
