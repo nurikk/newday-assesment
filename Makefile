@@ -10,20 +10,20 @@ help:
 	@echo "bash        - run bash in the container"
 
 stopdevenv:
-	@docker-compose -f docker-compose.yaml down
+	docker-compose -f docker-compose.yaml down
 
 startdevenv: stopdevenv
-	@docker-compose -f docker-compose.yaml up --build -d
+	docker-compose -f docker-compose.yaml up --build -d
 
 bash:
-	@docker exec -it $(CONTAINER_NAME) /bin/bash
+	docker exec -it $(CONTAINER_NAME) /bin/bash
 
 build:
-	@rm -rf ./dist;
-	@docker exec $(CONTAINER_NAME) ./build-reqs.sh
+	rm -rf ./dist;
+	docker exec $(CONTAINER_NAME) ./build-reqs.sh
 
 test-submit: build
-	@docker exec $(CONTAINER_NAME) ./submit.sh
+	docker exec $(CONTAINER_NAME) ./submit.sh
 
 unittest: build
-	@docker exec -it $(CONTAINER_NAME) ./tests.sh
+	docker exec -it $(CONTAINER_NAME) ./tests.sh
