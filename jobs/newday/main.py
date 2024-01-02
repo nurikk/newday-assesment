@@ -5,7 +5,7 @@ from operator import itemgetter
 
 import pyspark
 import wget
-from jobs.newday.schema import datasets
+from jobs.newday.schema import get_schema
 from jobs.newday.transformations import compute_movie_ratings, compute_top_user_movies
 
 logger = logging.getLogger(__name__)
@@ -41,8 +41,8 @@ def perform(spark: pyspark.SparkContext, args):
     output_format = args.get('output-format', DEFAULT_OUTPUT_FORMAT)
 
     logger.info(f'Staring {dataset_url}')
-    assert dataset_url in datasets, "Unknown dataset url"
-    schemas = datasets[dataset_url]
+
+    schemas = get_schema(dataset_url)
     with tempfile.TemporaryDirectory() as tempdir:
         loaded_datasets = download_dataset(spark=spark, url=dataset_url, schemas=schemas, tempdir=tempdir)
         movies, ratings = itemgetter(*schemas.keys())(loaded_datasets)

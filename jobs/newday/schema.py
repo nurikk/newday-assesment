@@ -15,4 +15,9 @@ datasets = {
             StructField("Rating", IntegerType(), True),
             StructField("Timestamp", IntegerType(), True)
         ])
-    }}
+    }
+}
+
+def get_schema(dataset):
+    assert dataset in datasets, "Unknown dataset url"
+    return datasets[dataset]
