@@ -24,5 +24,5 @@ build:
 test-submit: build
 	docker exec $(CONTAINER_NAME) ./submit.sh
 
-unittest: build
+test: build
 	docker exec $(CONTAINER_NAME) ./tests.sh
