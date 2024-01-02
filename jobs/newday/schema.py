@@ -18,6 +18,6 @@ datasets = {
     }
 }
 
-def get_schema(dataset):
+def get_schema(dataset) -> dict[str, StructType]:
     assert dataset in datasets, "Unknown dataset url"
     return datasets[dataset]
