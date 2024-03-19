@@ -22,7 +22,7 @@ jobs:
     - name: Workaround for permissions issue on github actions
       run: chmod -R 0777 .
     - run: make startdevenv
-    - run: make unittest
+    - run: make test
     - run: make test-submit
     - name: Upload test results
       uses: actions/upload-artifact@v3
